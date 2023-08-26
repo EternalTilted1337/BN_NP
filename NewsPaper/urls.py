@@ -34,8 +34,8 @@ urlpatterns = [
     path('articles/<int:pk>/delete/', ArticleDeleteView.as_view(), name='article_delete'), #article_delete.html
     path('accounts/', include('allauth.urls')),
     path('admin/', admin.site.urls),
-    path('', include('protect.urls')),
-    path('sign/', include('sign.urls')),
-    path('accounts/', include('allauth.urls')),
+    # path('', include('protect.urls')),
+    # path('sign/', include('sign.urls')),
+    # path('accounts/', include('allauth.urls')),
 ]
 
