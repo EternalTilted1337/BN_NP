@@ -15,7 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+print(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-nt#2a83bm6b+9q6@pt9yk%qj*28ua@3#0m4ebegzk&9&3w^vt3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'BD_NP',
     'django_filters',
+    'sign',
+    'protect',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -51,7 +53,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 
 ]
-SITE_ID = 1
+
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
@@ -59,11 +61,13 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-LOGIN_URL = 'account_login'
-LOGIN_REDIRECT_URL = 'news_list'
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
 
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,7 +84,7 @@ ROOT_URLCONF = 'NewsPaper.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates'],
+        'DIRS': [BASE_DIR/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -153,10 +157,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [
 
-  #...
-
-  os.path.join(BASE_DIR, 'MyApp/static')
-
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -170,3 +170,5 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+SITE_ID = 1

@@ -16,26 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from BD_NP.views import NewsDetailView, NewsListView, news_list
-from BD_NP.views import NewsCreateView, NewsUpdateView, NewsDeleteView
-from BD_NP.views import ArticleCreateView, ArticleUpdateView, ArticleDeleteView
 from django.urls import include
+from BD_NP.views import upgrade_me
 
 
 urlpatterns = [
-    path('news/', NewsListView.as_view()), #работает
-    path('news/<int:pk>/', NewsDetailView.as_view()),
-    path('news/create/', NewsCreateView.as_view(), name='news_create'), #news_create.html | работает
-    path('news/<int:pk>/edit/', NewsUpdateView.as_view(), name='news_edit'),#news_edit.html | работает
-    path('news/<int:pk>/delete/', NewsDeleteView.as_view(), name='news_delete'), #news_delete.html | работает
-#Articles все работают
-    path('articles/create/', ArticleCreateView.as_view(), name='article_create'), #articles/create.html
-    path('articles/<int:pk>/edit/', ArticleUpdateView.as_view(), name='article_edit'),#article_edit.html
-    path('articles/<int:pk>/delete/', ArticleDeleteView.as_view(), name='article_delete'), #article_delete.html
-    path('accounts/', include('allauth.urls')),
+
     path('admin/', admin.site.urls),
-    # path('', include('protect.urls')),
-    # path('sign/', include('sign.urls')),
-    # path('accounts/', include('allauth.urls')),
-]
+    path('', include('BD_NP.urls')),
+    path('sign/', include('BD_NP.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('protect/', include('BD_NP.urls')),
+    path('upgrade/', upgrade_me, name='upgrade'),
+
+ ]
 
