@@ -1,8 +1,7 @@
 from django.views.generic import ListView
-from BD_NP.models import Post
+from BD_NP.models import Post , Appointment, Category, models
 from django.views.generic.detail import DetailView
 from django.shortcuts import render
-from datetime import datetime
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
@@ -14,6 +13,14 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
+
+from django.shortcuts import render, reverse, redirect
+from django.views import View
+from django.core.mail import EmailMultiAlternatives  # импортируем класс для создание объекта письма с html
+from datetime import datetime
+
+from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
+from .models import Appointment
 
 class NewsListView(ListView):
     model = Post
@@ -49,7 +56,6 @@ class NewsDetailView(DetailView):
     template_name = 'news_detail.html'
     context_object_name = 'news_detail'
     pk_url_kwarg = 'pk'
-
 
 
 
@@ -142,6 +148,8 @@ class ProtectedView(TemplateView):
 class ProtectedView(LoginRequiredMixin, TemplateView):
     template_name = 'index.html'
 
+
+
 class CustomLoginView(LoginView):
     template_name = 'login.html'  # указывает на ваш шаблон формы входа
     success_url = '/home/'  # URL, куда будет перенаправлен пользователь после успешного входа
@@ -149,6 +157,7 @@ class CustomLoginView(LoginView):
     def form_valid(self, form):
         # Дополнительная логика, которую вы можете добавить при успешном входе
         return super().form_valid(form)
+
 
 class CustomLogoutView(LogoutView):
     template_name = 'logout.html'
@@ -159,3 +168,53 @@ class CustomLogoutView(LogoutView):
 
         return super().dispatch(request, *args, **kwargs)
 
+class CustomCategoryView(LogoutView):
+    model = Category
+    template_name = 'category.html'
+    name = models.CharField(max_length=100)
+    is_subscribed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
+def subscribe_category(request, category_id):
+    category = Category.objects.get(id=category_id)
+    category.is_subscribed = not category.is_subscribed
+    category.save()
+    return redirect('category')
+
+
+class AppointmentView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'make_appointment.html', {})
+
+    def post(self, request, *args, **kwargs):
+        appointment = Appointment(
+            date=datetime.strptime(request.POST['date'], '%Y-%m-%d'),
+            client_name=request.POST['client_name'],
+            message=request.POST['message'],
+        )
+        appointment.save()
+
+        # получаем наш html
+        html_content = render_to_string(
+            'appointment_created.html',
+            {
+                'appointment': appointment,
+            }
+        )
+
+        # в конструкторе уже знакомые нам параметры, да? Называются правда немного по-другому, но суть та же.
+        msg = EmailMultiAlternatives(
+            subject=f'{appointment.client_name} {appointment.date.strftime("%Y-%M-%d")}',
+            body=appointment.message,  # это то же, что и message
+            from_email='EternalTilted1337@yandex.ru',
+            to=['skavik46111@gmail.com'],  # это то же, что и recipients_list
+        )
+        msg.attach_alternative(html_content, "text/html")  # добавляем html
+        msg.send()  # отсылаем
+
+        return redirect('appointments:make_appointment')

@@ -2,7 +2,7 @@ from BD_NP.views import NewsDetailView, NewsListView, news_list
 from BD_NP.views import NewsCreateView, NewsUpdateView, NewsDeleteView
 from BD_NP.views import ArticleCreateView, ArticleUpdateView, ArticleDeleteView
 from django.urls import path
-from BD_NP.views import IndexView, ProtectedView, TemplateView, LoginRequiredMixin, CustomLoginView, CustomLogoutView
+from BD_NP.views import IndexView, ProtectedView,subscribe_category, TemplateView, LoginRequiredMixin, CustomLoginView, CustomLogoutView, CustomCategoryView
 
 urlpatterns = [
     path('', NewsListView.as_view()), #работает
@@ -17,7 +17,8 @@ urlpatterns = [
     path('account/', ProtectedView.as_view(), name='account'),
     path('sign/', ProtectedView.as_view(), name='sign'),
     path('login/', CustomLoginView.as_view(), name='login'),
-    path('logout/', CustomLogoutView.as_view(), name='logout')
-    # path('login/',LoginView.as_view(template_name='sign/login.html'),name='login'),
-    # path('logout/',LogoutView.as_view(template_name='sign/logout.html'),name='logout'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
+    path('category/', CustomCategoryView.as_view(), name='category'),
+    path('category/', CustomCategoryView.as_view(), name='category'),
+    path('category/<int:category_id>/subscribe/', subscribe_category, name='subscribe_category'),
 ]

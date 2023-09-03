@@ -1,0 +1,11 @@
+{% for category in categories %}
+    <h2>{{ category.name }}</h2>
+    <form method="POST" action="{% url 'subscribe_category' category.id %}">
+        {% csrf_token %}
+        {% if category.is_subscribed %}
+            <input type="submit" value="Отписаться">
+        {% else %}
+            <input type="submit" value="Подписаться">
+        {% endif %}
+    </form>
+{% endfor %}

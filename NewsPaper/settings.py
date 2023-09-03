@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    #'django.contrib.sites',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -170,5 +171,11 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
+EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
+EMAIL_HOST_USER = 'EternalTilted1337'#ТУТ КАК БЫ МОЙ ЭМАЙЛ НО Я ВАМ ЕГО НЕ ПОКАЖУ С:  # ваше имя пользователя, например, если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
+EMAIL_HOST_PASSWORD = 'tmRBsYD%666!'#А тут как бы мой пароль но вам я его тоже не дам С:  # пароль от почты
+EMAIL_USE_SSL = True  # Яндекс использует ssl, подробнее о том, что это, почитайте в дополнительных источниках, но включать его здесь обязательно
 
 SITE_ID = 1
