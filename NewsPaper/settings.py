@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'appointment',
-    #'django.contrib.sites',
+    'BD_NP.apps',
+    'django.contrib.sites',
 ]
 
 DEFAULT_FROM_EMAIL = 'EternalTilted1337@yandex.ru'

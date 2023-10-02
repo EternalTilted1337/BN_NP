@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.utils.crypto import get_random_string
 from datetime import datetime
-from BD_NP.models import Appointment
+
 from django.utils import timezone
 
 class Author(models.Model):
@@ -65,24 +65,24 @@ class Comment(models.Model):
         ordering = ['created_at']
 
 
-# class Appointment(models.Model):
-#     date = models.DateField(
-#         default=datetime.utcnow,
-#     )
-#     client_name = models.CharField(
-#         max_length=200
-#     )
-#     message = models.TextField()
-#
-#     def __str__(self):
-#         return f'{self.client_name}: {self.message}'
-
-
-
 class Appointment(models.Model):
-    date = models.DateField()
-    client_name = models.CharField(max_length=200)
+    date = models.DateField(
+        default=datetime.utcnow,
+    )
+    client_name = models.CharField(
+        max_length=200
+    )
     message = models.TextField()
 
     def __str__(self):
         return f'{self.client_name}: {self.message}'
+
+
+
+# class Appointment(models.Model):
+#     date = models.DateField()
+#     client_name = models.CharField(max_length=200)
+#     message = models.TextField()
+#
+#     def __str__(self):
+#         return f'{self.client_name}: {self.message}'
