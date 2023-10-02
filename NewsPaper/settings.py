@@ -12,10 +12,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(BASE_DIR)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -41,13 +45,16 @@ INSTALLED_APPS = [
     'BD_NP',
     'django_filters',
     'sign',
-    'protect',
+    #'protect',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'appointment',
     #'django.contrib.sites',
 ]
+
+DEFAULT_FROM_EMAIL = 'EternalTilted1337@yandex.ru'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -96,7 +103,7 @@ TEMPLATES = [
             ],
                 'libraries': {
                 'custom_tags': 'BD_NP.templatetags.custom_tags',# путь к модулю с тегами
-                            }
+            }
         },
     },
 ]
@@ -172,10 +179,17 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-EMAIL_HOST = 'smtp.yandex.ru'  # адрес сервера Яндекс-почты для всех один и тот же
-EMAIL_PORT = 465  # порт smtp сервера тоже одинаковый
-EMAIL_HOST_USER = 'EternalTilted1337'#ТУТ КАК БЫ МОЙ ЭМАЙЛ НО Я ВАМ ЕГО НЕ ПОКАЖУ С:  # ваше имя пользователя, например, если ваша почта user@yandex.ru, то сюда надо писать user, иными словами, это всё то что идёт до собаки
-EMAIL_HOST_PASSWORD = 'tmRBsYD%666!'#А тут как бы мой пароль но вам я его тоже не дам С:  # пароль от почты
-EMAIL_USE_SSL = True  # Яндекс использует ssl, подробнее о том, что это, почитайте в дополнительных источниках, но включать его здесь обязательно
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = os.getenv('YANDEX_MAIL')
+EMAIL_HOST_PASSWORD = os.getenv('SMTP_YADEX_PASS')
+EMAIL_SMTP_AUTH = True
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 SITE_ID = 1

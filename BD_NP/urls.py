@@ -1,8 +1,9 @@
-from BD_NP.views import NewsDetailView, NewsListView, news_list
+from BD_NP.views import NewsDetailView, NewsListView, news_list, AppointmentView
 from BD_NP.views import NewsCreateView, NewsUpdateView, NewsDeleteView
 from BD_NP.views import ArticleCreateView, ArticleUpdateView, ArticleDeleteView
 from django.urls import path
 from BD_NP.views import IndexView, ProtectedView,subscribe_category, TemplateView, LoginRequiredMixin, CustomLoginView, CustomLogoutView, CustomCategoryView
+
 
 urlpatterns = [
     path('', NewsListView.as_view()), #работает
@@ -21,4 +22,5 @@ urlpatterns = [
     path('category/', CustomCategoryView.as_view(), name='category'),
     path('category/', CustomCategoryView.as_view(), name='category'),
     path('category/<int:category_id>/subscribe/', subscribe_category, name='subscribe_category'),
+    path('appointment/', AppointmentView.as_view(), name='appointment'),
 ]

@@ -27,6 +27,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('protect/', include('BD_NP.urls')),
     path('upgrade/', upgrade_me, name='upgrade'),
-
+    path('appointments/', include(('appointment.urls', 'appointments'), namespace='Appointments')),
+    path('accounts/', include('allauth.urls')),
  ]
 

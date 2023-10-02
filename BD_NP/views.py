@@ -1,7 +1,6 @@
 from django.views.generic import ListView
-from BD_NP.models import Post , Appointment, Category, models
+from BD_NP.models import Post, Category, models
 from django.views.generic.detail import DetailView
-from django.shortcuts import render
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
@@ -10,24 +9,25 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
-
-from django.shortcuts import render, reverse, redirect
+from django.shortcuts import render,  redirect
 from django.views import View
 from django.core.mail import EmailMultiAlternatives  # импортируем класс для создание объекта письма с html
 from datetime import datetime
-
-from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
+import os
+#from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
 from .models import Appointment
+from django.conf import settings
+from django.template.loader import render_to_string
+
 
 class NewsListView(ListView):
     model = Post
     template_name = 'news_list.html'
     context_object_name = 'object'
     queryset = Post.objects.order_by('-id')
-    paginate_by = 1 # вот так мы можем указать количество записей на странице
+    paginate_by = 1  # вот так мы можем указать количество записей на странице
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -51,6 +51,7 @@ def news_list(request):
     total_news_count = articles.count()
     return render(request, 'news_list.html', {'articles': articles, 'total_news_count': total_news_count})
 
+
 class NewsDetailView(DetailView):
     model = Post
     template_name = 'news_detail.html'
@@ -63,8 +64,10 @@ class NewsDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['post'] = self.object
         return context
+
+
     ###################################################################################################
-class NewsCreateView(CreateView): #Создание новости
+class NewsCreateView(CreateView):  #Создание новости
     model = Post
     fields = ['title', 'text']
     template_name = 'create/create.html'
@@ -91,11 +94,11 @@ class NewsDeleteView(DeleteView): #Удаление новостей
         return context
 
 class PostCreateView(CreateView):
-  model = Post
-  fields = ['title', 'text']
+    model = Post
+    fields = ['title', 'text']
 
 
-class ArticleUpdateView(UpdateView): #Обновление статьи
+class ArticleUpdateView(UpdateView):#Обновление статьи
     model = Post
     fields = ['title', 'text']
     template_name = 'article_edit.html'
@@ -187,34 +190,57 @@ def subscribe_category(request, category_id):
     return redirect('category')
 
 
+# class AppointmentView(View):
+#     def get(self, request, *args, **kwargs):
+#         msg = EmailMultiAlternatives(
+#             subject=f'6u6u6utrs',
+#             body='Text',  # это то же, что и message
+#             from_email=settings.EMAIL_HOST_USER,
+#             to=[os.getenv('TEST_GMAIL')],  # это то же, что и recipients_list
+#         )
+#
+#         msg.send()  # отсылаем)
+#         return redirect('appointments:make_appointment')
+#
+#     def post(self, request, *args, **kwargs):
+#         appointment = Appointment(
+#             date=datetime.strptime(request.POST['date'], '%Y-%m-%d'),
+#             client_name=request.POST['client_name'],
+#             message=request.POST['message'],
+#         )
+#
+#
+#         appointment.save()
+#
+      #  return redirect('appointments:make_appointment')
+
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
+
 class AppointmentView(View):
+
     def get(self, request, *args, **kwargs):
-        return render(request, 'make_appointment.html', {})
+        msg = EmailMultiAlternatives(
+            subject='New appointment',
+            body='You have a new appointment',
+            from_email=settings.EMAIL_HOST_USER,
+            to=[os.getenv('TEST_GMAIL')]
+        )
+        msg.send()
+        return render(request,'make_appointment.html')
 
     def post(self, request, *args, **kwargs):
         appointment = Appointment(
-            date=datetime.strptime(request.POST['date'], '%Y-%m-%d'),
+            date=request.POST['date'],
             client_name=request.POST['client_name'],
-            message=request.POST['message'],
+            message=request.POST['message']
         )
         appointment.save()
 
-        # получаем наш html
         html_content = render_to_string(
-            'appointment_created.html',
-            {
-                'appointment': appointment,
-            }
+            'make_appointment.html',
+            {'appointment': appointment}
         )
-
-        # в конструкторе уже знакомые нам параметры, да? Называются правда немного по-другому, но суть та же.
-        msg = EmailMultiAlternatives(
-            subject=f'{appointment.client_name} {appointment.date.strftime("%Y-%M-%d")}',
-            body=appointment.message,  # это то же, что и message
-            from_email='EternalTilted1337@yandex.ru',
-            to=['skavik46111@gmail.com'],  # это то же, что и recipients_list
-        )
-        msg.attach_alternative(html_content, "text/html")  # добавляем html
-        msg.send()  # отсылаем
 
         return redirect('appointments:make_appointment')
