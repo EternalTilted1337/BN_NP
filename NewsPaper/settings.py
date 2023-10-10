@@ -46,12 +46,15 @@ INSTALLED_APPS = [
     'django_filters',
     'sign',
     #'protect',
+
+    'BD_NP.apps',
+
+    'django.contrib.sites',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'BD_NP.apps',
-    'django.contrib.sites',
 ]
 
 DEFAULT_FROM_EMAIL = 'EternalTilted1337@yandex.ru'

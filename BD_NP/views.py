@@ -1,25 +1,22 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView, DeleteView, UpdateView, TemplateView, View
 from BD_NP.models import Post, Category, models
 from django.views.generic.detail import DetailView
-from django.views.generic import CreateView, DeleteView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.contrib.auth.models import Group
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import User
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render,  redirect
-from django.views import View
-from django.core.mail import EmailMultiAlternatives  # импортируем класс для создание объекта письма с html
-from datetime import datetime
 import os
-#from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
 from .models import Appointment
 from django.conf import settings
+
+from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+
+#from django.template.loader import render_to_string  # импортируем функцию, которая срендерит наш html в текст
 
 
 class NewsListView(ListView):
@@ -104,7 +101,7 @@ class ArticleUpdateView(UpdateView):#Обновление статьи
     template_name = 'article_edit.html'
 
 class ArticleCreateView(PostCreateView): #Создание статьи
-    temoplate_name = 'articles/create.html'
+    template_name = 'articles/create.html'
 
 
 
@@ -190,40 +187,12 @@ def subscribe_category(request, category_id):
     return redirect('category')
 
 
-# class AppointmentView(View):
-#     def get(self, request, *args, **kwargs):
-#         msg = EmailMultiAlternatives(
-#             subject=f'6u6u6utrs',
-#             body='Text',  # это то же, что и message
-#             from_email=settings.EMAIL_HOST_USER,
-#             to=[os.getenv('TEST_GMAIL')],  # это то же, что и recipients_list
-#         )
-#
-#         msg.send()  # отсылаем)
-#         return redirect('appointments:make_appointment')
-#
-#     def post(self, request, *args, **kwargs):
-#         appointment = Appointment(
-#             date=datetime.strptime(request.POST['date'], '%Y-%m-%d'),
-#             client_name=request.POST['client_name'],
-#             message=request.POST['message'],
-#         )
-#
-#
-#         appointment.save()
-#
-      #  return redirect('appointments:make_appointment')
-
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-
-
 class AppointmentView(View):
 
     def get(self, request, *args, **kwargs):
         msg = EmailMultiAlternatives(
             subject='New appointment',
-            body='You have a new appointment',
+            body='You have a new appointment123',
             from_email=settings.EMAIL_HOST_USER,
             to=[os.getenv('TEST_GMAIL')]
         )
@@ -243,4 +212,4 @@ class AppointmentView(View):
             {'appointment': appointment}
         )
 
-        return redirect('appointments:make_appointment')
+        return redirect('BD_NP:make_appointment')
